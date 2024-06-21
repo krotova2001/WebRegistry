@@ -1,0 +1,55 @@
+﻿@model IEnumerable<WebRegistry.Models.User_roles>
+
+@{
+    ViewData["Title"] = "Index";
+    var isErrorSelf = TempData["ErrorSelfUser"];
+    bool _isErrorSelf = false;
+    if (isErrorSelf!=null)
+        bool.TryParse(isErrorSelf.ToString(), out _isErrorSelf);
+}
+
+<h1>Права пользователей</h1>
+
+<p>
+    <a asp-action="Create">Добавить разрешение</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Login)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRoleNavigation.role)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Login) 
+            <br><small>
+                @Html.DisplayFor(modelItem => item.Fio) 
+            </small>
+               
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRoleNavigation.role)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.idUserRole">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.idUserRole">Подробнее</a> |
+                    <a asp-action="Delete" asp-route-id="@item.idUserRole">Удалить</a>
+            </td>
+        </tr>
+}
+            @if (_isErrorSelf)
+            {
+                <script>
+                    alert('Нельзя поменять разрешение самому себе, это может сдеать другой администратор системы');
+                </script>
+            }
+    </tbody>
+</table>

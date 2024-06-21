@@ -1,0 +1,41 @@
+﻿@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}
+@{
+    ViewData["Title"] = "Новое изделие";
+}
+
+<h1>Новое изделие</h1>
+<p>Предварительное добавление изделия по файлу чертежа в базу данных. Происходит резервирование шифра</p>
+
+<p class="alert-danger">@TempData["Error"]</p>
+
+<form asp-action="index" method="post" id="myForm" enctype="multipart/form-data">
+    <div class="form-group">
+    <input class="custom-file-input" type="file" name="file" id="file" />
+    <input type="submit" value="Загрузить чертеж" class="btn btn-primary" />
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#myForm').validate({
+            rules: {
+                file: {
+                    required: true,
+                    extension: "png|jpg|jpeg|gif"
+                   
+                }
+            },
+            messages: {
+                file: {
+                    required: "Please select a file",
+                    extension: "Please upload a file with a valid extension (png, jpg, jpeg, gif)"
+                }
+            }
+        });
+    });
+    
+
+</script>
+

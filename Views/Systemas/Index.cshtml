@@ -1,0 +1,59 @@
+﻿@model IEnumerable<WebRegistry.Models.Systema>
+
+@{
+    ViewData["Title"] = "Системы";
+}
+
+<h1>Системы</h1>
+
+<p>
+    @*
+    <a asp-action="Create">Добавить</a>
+    *@
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fullname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descrition)
+            </th>
+            <th>
+                Изделия в составе
+            </th>
+    </thead>
+    <tbody>
+@foreach (var item in Model) 
+{
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.SystemName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Fullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descrition)
+            </td>
+                <td>
+            @foreach (var izd in item.IzdelieNavigaion)
+            {
+                <li>
+                    <a asp-controller="Izdelies" asp-action="Details" asp-route-id="@izd.IdIzdelieNavigation.Id">
+                    @izd.IdIzdelieNavigation.Shifr
+                    </a>
+                </li>            
+            }
+                
+           
+               
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

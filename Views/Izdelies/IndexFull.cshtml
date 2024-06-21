@@ -1,0 +1,194 @@
+﻿@model IEnumerable<WebRegistry.Models.Izdelie>
+
+@{
+    ViewData["Title"] = "Список изделий";
+}
+
+<h1>Изделия</h1>
+
+<p>
+    @*
+    <a asp-action="Create">Create New</a>
+    *@
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Shifr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FilePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Square)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Perimeter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CircleDiametr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DifficultyGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Razrab)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prov)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tkontr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nkontr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Master)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Utverd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerShifr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WeightAl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Articul)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContainExtComponent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsArchived)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategoryNavigation)
+            </th>
+            <th>
+                Используется в изделиях
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shifr)
+            </td>
+                <td>
+                    <a href="@item.FilePath">
+                @Html.DisplayFor(modelItem => item.FilePath)
+                    </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JX)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WX)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JY)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WY)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Square)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Perimeter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CircleDiametr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DifficultyGroup)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Razrab)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prov)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tkontr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nkontr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Master)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Utverd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerShifr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WeightAl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Articul)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContainExtComponent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsArchived)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCategoryNavigation.IdCategory)
+            </td>
+                <td>
+                    @foreach(var detail in item.DetailIdParentNavigations)
+                    {
+                       
+                    }
+                </td>
+
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

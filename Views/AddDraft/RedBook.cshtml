@@ -1,0 +1,47 @@
+﻿@using WebRegistry.Components
+@model WebRegistry.Models.RedBook
+
+@{
+    bool allowToAdd = User.IsInRole("Admin") || User.IsInRole("Constructor");
+    ViewData["Title"] = "Красная книга";
+}
+
+<link type="text/css" href="~/css/RedBook.css" rel="stylesheet" />
+<div class="header">
+    <h4 style="text-align: center;">Новая запись в "Красную книгу"</h4>
+    
+</div>
+<figcaption class="text-end blockquote-footer" style="color:gray">Последние 5 записей в книге</figcaption>
+<div class="container col-lg-10 align-content-md-center">
+    <component type="typeof(RedBookGrid)" render-mode="ServerPrerendered" param-AllowToAdd = "@allowToAdd" />
+</div>
+
+<div class="container-fluid book" />  
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @*Интерактивная проверка для того, существует ли такой шифр*@
+    <script type="text/javascript">
+        $('#ShifrItem').on('input', function () {
+            var v = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ShifrExist")",
+                data: { shifr: v },
+                dataType: "text",
+                success: function (msg) {
+                    $('#ShifrExist').html(msg.replace(/^"(.*)"$/, '$1'));
+
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        });
+    </script>
+    
+}

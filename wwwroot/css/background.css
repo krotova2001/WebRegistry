@@ -1,0 +1,6 @@
+﻿.back {
+    background: url("../pic/bg3.png");
+    background-attachment: fixed;
+    background-position: top center;
+    background-size: cover;
+}

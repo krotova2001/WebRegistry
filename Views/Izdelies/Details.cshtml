@@ -1,0 +1,272 @@
+﻿@model WebRegistry.Models.Izdelie
+@using System.IO;
+
+@{
+    ViewData["Title"] = "Подробности";
+    string draftPicture = $"drafts\\{Model.Shifr}_{Model.Id}.png";
+    string draftPdf = $"drafts\\{Model.Shifr}_{Model.Id}.pdf";
+    int extcompcount;
+}
+
+<h1>Изделие</h1>
+
+<div>
+    <h4>Подробная информация с чертежа</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Shifr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Shifr)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FilePath)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FilePath)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.JX)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.JX)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WX)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WX)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.JY)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.JY)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WY)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WY)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Square)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Square)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Weight)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Weight)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Perimeter)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Perimeter)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CircleDiametr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CircleDiametr)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DifficultyGroup)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DifficultyGroup)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Gost)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Gost)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Razrab)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Razrab)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Prov)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Prov)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tkontr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tkontr)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nkontr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nkontr)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Master)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Master)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Utverd)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Utverd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CustomerShifr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CustomerShifr)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WeightAl)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WeightAl)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Articul)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Articul)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ContainExtComponent)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.ExtcomponentsNavigations.Count>0)
+            {
+                @foreach (var component in Model.ExtcomponentsNavigations)
+                {
+                    <li>
+
+                        @component.ExternalComponentIdNavigation.Name  @component.ExternalComponentIdNavigation.Shifr - 
+                        
+                        @if(@Int32.TryParse(@component.Count, out extcompcount))
+                        {
+                            @extcompcount @(" шт.")
+                        }
+                        else
+                        {
+                            @component.Count @(" шт. (") @component.Note @(")")
+                        }
+                    </li>
+                }
+            }
+            else
+            {
+                <p>-----</p>
+            }
+
+
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DetailIdParentNavigations)
+        </dt>
+        <dd class = "col-sm-10">
+
+            <ol>
+                @foreach (var detail in Model.DetailIdParentNavigations)
+                {
+                    <li>
+                        <a asp-controller="Izdelies" asp-action="Details" asp-route-id="@detail.IdPartNavigation.Id">
+                        @detail.IdPartNavigation.Shifr
+                        </a>
+                    </li>
+                }
+            </ol>
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DetailIdPartNavigations)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var detail in Model.DetailIdPartNavigations)
+            {
+                <li>
+                    <a asp-controller="Izdelies" asp-action="Details" asp-route-id="@detail.IdParentNavigation.Id">
+                        @detail.IdParentNavigation.Shifr
+                    </a>
+                </li>
+            }
+
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SystemasNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var detail in Model.SystemasNavigation)
+            {
+                <li>
+                        @detail.IdSystemaNavigation.SystemName
+                </li>
+            }
+
+        </dd>
+
+
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsArchived)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IsArchived == 0)
+            {
+                <p>Нет</p>
+            }
+            else
+            {
+                <p>Да</p>
+            }
+        </dd>
+
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdCategoryNavigation)
+        </dt>
+
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCategoryNavigation.Name)
+        </dd>
+        
+        
+    </dl>
+</div>
+<div>
+    @if (System.IO.Path.GetExtension(Model.FilePath) == ".dwg")
+    {
+        <img src="~/@draftPicture " width="80%" alt="Не удалось загрузить фото чертежа" />
+    }
+    @if (System.IO.Path.GetExtension(Model.FilePath) == ".pdf")
+    {
+        <object data="~/@draftPdf " type="application/pdf" width="80%" height="720">не удалось загрузить чертеж </object>
+    }
+
+</div>
+<div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Редактировать</a>
+    }
+    <a asp-action="Index">К списку изделий</a>
+</div>
+
+

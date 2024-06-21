@@ -1,0 +1,90 @@
+﻿@using System.DirectoryServices
+@using WebRegistry.Services
+
+@{
+    string Fio = UserHelper.GetFio(User.Identity.Name);
+}
+<base href="~/" />
+<component type="typeof(Microsoft.AspNetCore.Components.Web.HeadOutlet)"
+           render-mode="ServerPrerendered" />
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Справочник номенклатуры</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebRegistry.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/background.css" asp-append-version="true" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+
+</head>
+<body class="back">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <img src="~/pic/apple-touch-icon-72x72.png" alt="логотип Сиал" class="float-left" width = "40" style="margin-right:15px">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><b>Справочник</b></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Izdelies" asp-action="Index"><b>Каталог изделий</b></a>
+                        </li>
+                        @*
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Izdelies" asp-action="IndexFull"><b>Системные нормали (полный список)</b> </a>
+                        </li>
+                        *@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ExtComponents" asp-action="Index"><b>Покупные изделия</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Systemas" asp-action="Index"><b>Системы</b></a>
+                        </li>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Constructor"))
+                        {
+                            <li class="nav-item active bg-danger bg-opacity-25 rounded-3">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AddDraft" asp-action="RedBook"><b>Резервирование шифра ("Красная книга")</b></a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark"
+                                  
+                                asp-area="" asp-controller="UserRoles" asp-action="Index"><b>Доступы пользователей</b></a>
+                            </li>
+                        }
+                    </ul>
+                    <p class="nav navbar-text"><b>@Fio</b></p>
+                </div>
+            </div>
+        </nav>
+    </header>
+   
+    <div class="container">
+        <main role="main" class="pb-3 ">
+            @RenderBody()
+        </main>
+    </div>
+    
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - ЛПЗ Сегал - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

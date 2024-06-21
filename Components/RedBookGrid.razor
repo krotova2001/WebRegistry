@@ -1,0 +1,204 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using WebRegistry.Models
+@using WebRegistry.Services
+@using WebRegistry;
+
+@inject ILoggerFactory LoggerFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NomenclatureContext dbContext
+@inject Services.ShifrRezerver.IShifrService sservice;
+@inject Services.UserActionLog.IUserActionLogger ulogger;
+
+<RadzenDataGrid Data="@RedBooks" TItem="RedBook" GridLines="@GridLines" ColumnWidth="140px" EditMode="@DataGridEditMode.Multiple" @ref="RB" RowCreate="@OnCreateRow" RowUpdate="@OnUpdateRow">
+    <Columns>
+        <RadzenDataGridColumn TItem="RedBook" Property="ShifrRedBook" Title="Шифр" Width="8em">
+            <EditTemplate Context="redbook">
+                <RadzenTextBox @bind-Value="redbook.ShifrRedBook" Style="width:150; display: block" Name="ShifrRedBook" aria-label="Введите шифр" />
+                <RadzenRequiredValidator Text="Необходимо ввести шифр" Component="ShifrRedBook" Popup="true"/>
+                <RadzenCustomValidator Value=@redbook.ShifrRedBook Text="Этот шифр занят" Component="ShifrRedBook" Popup="true"
+                                       Validator="@(()=>!sservice.IsShifrExist(redbook.ShifrRedBook))"></RadzenCustomValidator>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="RedBook" Property="Inventory" Title="Инвентарный номер" Width="7em">
+            <Template Context="redbook">
+                <text>C-</text>@redbook.Inventory
+            </Template>
+            <EditTemplate Context="redbook">
+                <span style="display:flex; flex-wrap: nowrap; align-items:center">
+                    <text>C-</text>
+                    <RadzenNumeric @bind-Value="redbook.Inventory" Style="width:150px; display: block" Name="Inventory" aria-label="Введите инв. номер" AutoComplete="true"
+                    />
+                </span>
+                <RadzenRequiredValidator Text="Необходимо ввести инв. номер" Component="Inventory" Popup="true"/>
+                <RadzenCustomValidator Value=@redbook.Inventory Text="Этот номер занят" Component="Inventory" Popup="true"
+                                       Validator="@(()=>!sservice.IsInvNumberExist(redbook.Inventory.ToString()))">
+
+                </RadzenCustomValidator>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="RedBook" Property="userPublishingDate" Title="Дата запуска" Width="8em">
+            <Template Context="redbook">
+                @if (@redbook.userPublishingDate.Month != 1 && @redbook.userPublishingDate.Day != 1)
+                {
+                    @redbook.userPublishingDate.ToString("D")
+                }
+                else
+                {
+                    @redbook.userPublishingDate.Year.ToString() <text> г.</text>
+                }
+            </Template>
+            
+            <EditTemplate Context="redbook">
+                <RadzenDatePicker @bind-Value="redbook.userPublishingDate" Style="width:70%" Name="userPublishingDate" ShowTime="false" DateFormat="D" />
+                <RadzenRequiredValidator Text="Укажите дату запуска" Component="userPublishingDate" Popup="true" />
+            </EditTemplate>
+            
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right" Width="50px">
+
+            <Template Context="order">
+                @*  
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+              *@
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" 
+                              class="my-0 ms-0" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton> 
+            </Template>
+
+            <EditTemplate Context="order">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(order))" aria-label="Save"/>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(order))" aria-label="Cancel"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="/Redbook/ShowAllBook/">
+        <RadzenButton ButtonStyle="ButtonStyle.Warning" Text="Все записи книги" Style="margin-top: 6px"/>
+    </a>
+    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="add_circle_outline" Text="Добавить запись" Click="@InsertRow" Visible="@AllowToAdd" Style="margin-top: 6px"/>
+</div>
+
+@code {
+    [Parameter] public bool AllowToAdd { get; set; }
+    RadzenDataGrid<RedBook> RB;
+    List<RedBook> ordersToInsert = new List<RedBook>();
+    List<RedBook> ordersToUpdate = new List<RedBook>();
+    Radzen.DataGridGridLines GridLines = Radzen.DataGridGridLines.Both;
+    List<RedBook> RedBooks;
+    string UserFio;
+    string UserLogin;
+    int lastInvNumber=0;
+
+    private async Task GetClaimsPrincipalData()
+    {
+        AuthenticationState authenticationState = await AuthenticationStateProvider
+                    .GetAuthenticationStateAsync();
+        var authState = authenticationState;
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            if (user.Identity.Name != null)
+            {
+                UserFio = UserHelper.GetFio(user.Identity.Name);
+                UserLogin = user.Identity.Name;
+            }
+        }
+        else
+        {
+            throw new Exception("Пользователь не аутентифицирован");
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        RedBooks = dbContext.RedBookArchive.OrderByDescending(t => t.userPublishingDate)
+            .ThenByDescending(n=>n.Inventory)
+            .Take(5).ToList();
+        GetClaimsPrincipalData();
+        lastInvNumber = sservice.GetNewInvNumber();
+    }
+
+    async Task InsertRow()
+    {
+        var order = new RedBook();
+        order.Inventory = lastInvNumber;
+        ordersToInsert.Add(order);
+        await RB.InsertRow(order);
+        lastInvNumber++;
+
+        //await RB.EditRow(order);
+    }
+
+    void OnCreateRow(RedBook order)
+    {
+        order.AuthorLogin = UserLogin;
+        order.IsArchived = false;
+        dbContext.Add(order);
+        dbContext.SaveChanges();
+        ordersToInsert.Remove(order);
+        var logger = LoggerFactory.CreateLogger<RedBook>();
+        logger.LogWarning("Создание записи в Красной книге {0} - {1}", order.ShifrRedBook, UserFio);
+        ulogger.Log(UserLogin, $"Создание записи в Красной книге (web-верия) - {order.ShifrRedBook}");
+       
+    }
+
+    void OnUpdateRow(RedBook order)
+    {
+        Reset(order);
+        dbContext.Update(order);
+        dbContext.SaveChanges();
+    }
+
+    void Reset()
+    {
+        ordersToInsert.Clear();
+    }
+
+    void Reset(RedBook order)
+    {
+        ordersToInsert.Remove(order);
+    }
+
+    async Task SaveRow(RedBook order)
+    {
+        await RB.UpdateRow(order);
+    }
+
+    void CancelEdit(RedBook order)
+    {
+        Reset(order);
+        RB.CancelEditRow(order);
+    }
+
+    async Task DeleteRow(RedBook order)
+    {
+        Reset(order);
+        dbContext.Remove<RedBook>(order);
+        await dbContext.SaveChangesAsync();
+        RB.CancelEditRow(order);
+        var logger = LoggerFactory.CreateLogger<RedBook>();
+        logger.LogWarning("Удаление записи из Красной книги {0} - {1}", order.ShifrRedBook, UserFio);
+        ulogger.Log(UserLogin, $"Удаление записи из Красной книги (web-верия) - {order.ShifrRedBook}");
+        await RB.Reload();
+    }
+
+    async Task EditRow(RedBook order)
+    {
+        if (ordersToInsert.Any())
+        {
+            Reset();
+        }
+
+        ordersToUpdate.Add(order);
+        await RB.EditRow(order);
+    }
+
+
+}
+

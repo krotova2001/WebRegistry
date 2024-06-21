@@ -1,0 +1,87 @@
+﻿@inject WebRegistry.Models.NomenclatureContext dbContext
+@using Microsoft.EntityFrameworkCore
+@using WebRegistry.Models
+
+<RadzenDataGrid Data="@RedBooks" TItem="RedBook" GridLines="@GridLines" ColumnWidth="170px" AllowFiltering="true" AllowColumnResize="true"
+                FilterMode="FilterMode.Simple" PageSize="25" AllowPaging="true" FilterCaseSensitivity="FilterCaseSensitivity.Default"
+                OrOperatorText="Или"
+                AndOperatorText="И"
+                GreaterThanOrEqualsText="Больше или равно"
+                LessThanOrEqualsText="Меньше или равно"
+                GreaterThanText="Больше, чем"
+                LessThanText="Меньше, чем"
+                IsNotNullText="Не пустое"
+                IsNullText="Не заполнено"
+                IsEmptyText="Пустое"
+                EqualsText="Равно"
+                NotEqualsText="Не равно"
+                ApplyFilterText="Применить"
+                ClearFilterText="Сбросить"
+                
+                >
+    <Columns>
+        <RadzenDataGridColumn TItem="RedBook" Property="ShifrRedBook" Title="Шифр" Width="8em" >
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="RedBook" Property="Inventory" Title="Инвентарный номер" Width="7em" FilterValue="@selectedInv" >
+            <Template Context="redbook">
+                <text Style="margin-left:15px">C-</text>@redbook.Inventory
+            </Template>
+            <FilterTemplate Context="redbook">
+                <text>С - </text>
+                <RadzenNumeric @bind-Value="@selectedInv" Style="margin-left:3px"/>
+            </FilterTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="RedBook" Property="userPublishingDate" Title="Дата запуска" Width="8em">
+            <Template Context="redbook">
+                @if (@redbook.userPublishingDate.Month != 1 && @redbook.userPublishingDate.Day != 1)
+                {
+                    @redbook.userPublishingDate.ToString("D")
+                }
+                else
+                {
+                    @redbook.userPublishingDate.Year.ToString() <text> г.</text>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        
+        <RadzenDataGridColumn TItem="RedBook" Property="IsArchived" Title="Снято" Width="6em">
+            <Template Context="redbook">
+                @if (@redbook.IsArchived == true)
+                {
+                    <text>Снято</text>
+                }
+            </Template>
+          
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="RedBook" Property="Note" Title="Примечание" Width="10em">
+        </RadzenDataGridColumn>
+       
+    </Columns>
+</RadzenDataGrid>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="/AddDraft/RedBook/">
+    <RadzenButton ButtonStyle="ButtonStyle.Danger" Text="Добавить запись" Style="margin-top: 6px"/>
+    </a>
+    
+</div>
+
+@code {
+    Radzen.DataGridGridLines GridLines = Radzen.DataGridGridLines.Both;
+    List<RedBook> RedBooks;
+    int? selectedInv = null;
+   
+
+    protected override void OnInitialized()
+    {
+        RedBooks = dbContext.RedBookArchive.AsNoTracking().OrderByDescending(t => t.userPublishingDate)
+            .ThenByDescending(n=>n.Inventory)
+            .ToList();
+
+    }
+
+}
+

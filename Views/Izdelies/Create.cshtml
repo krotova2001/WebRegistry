@@ -1,0 +1,170 @@
+﻿@model WebRegistry.Models.Izdelie
+
+@{
+    ViewData["Title"] = "Добавить изделие";
+    string draftPicture = $"temp\\temp.png";
+}
+
+<h1>Добавление изделия (резервирование)</h1>
+
+<h4>Изделие</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Izdelies" asp-action="Save" id="formID" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <p>@TempData["ShifrError"]</p>
+                <label asp-for="Shifr" class="control-label"></label>
+                <input asp-for="Shifr" class="form-control" id="ShifrItem"/>
+                <span asp-validation-for="Shifr" class="text-danger"></span>
+                <span class="text-danger" id="ShifrExist"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="FilePath" class="control-label"></label>
+                <input asp-for="FilePath" class="form-control" />
+                <span asp-validation-for="FilePath" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="JX" class="control-label"></label>
+                <input asp-for="JX" class="form-control" />
+                <span asp-validation-for="JX" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WX" class="control-label"></label>
+                <input asp-for="WX" class="form-control" />
+                <span asp-validation-for="WX" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="JY" class="control-label"></label>
+                <input asp-for="JY" class="form-control" />
+                <span asp-validation-for="JY" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WY" class="control-label"></label>
+                <input asp-for="WY" class="form-control" />
+                <span asp-validation-for="WY" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Square" class="control-label"></label>
+                <input asp-for="Square" class="form-control" />
+                <span asp-validation-for="Square" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Weight" class="control-label"></label>
+                <input asp-for="Weight" class="form-control" />
+                <span asp-validation-for="Weight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Perimeter" class="control-label"></label>
+                <input asp-for="Perimeter" class="form-control" />
+                <span asp-validation-for="Perimeter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CircleDiametr" class="control-label"></label>
+                <input asp-for="CircleDiametr" class="form-control" />
+                <span asp-validation-for="CircleDiametr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DifficultyGroup" class="control-label"></label>
+                <input asp-for="DifficultyGroup" class="form-control" />
+                <span asp-validation-for="DifficultyGroup" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gost" class="control-label"></label>
+                <input asp-for="Gost" class="form-control" />
+                <span asp-validation-for="Gost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Razrab" class="control-label"></label>
+                <input asp-for="Razrab" class="form-control" />
+                <span asp-validation-for="Razrab" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Prov" class="control-label"></label>
+                <input asp-for="Prov" class="form-control" />
+                <span asp-validation-for="Prov" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tkontr" class="control-label"></label>
+                <input asp-for="Tkontr" class="form-control" />
+                <span asp-validation-for="Tkontr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nkontr" class="control-label"></label>
+                <input asp-for="Nkontr" class="form-control" />
+                <span asp-validation-for="Nkontr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Master" class="control-label"></label>
+                <input asp-for="Master" class="form-control" />
+                <span asp-validation-for="Master" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Utverd" class="control-label"></label>
+                <input asp-for="Utverd" class="form-control" />
+                <span asp-validation-for="Utverd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerShifr" class="control-label"></label>
+                <input asp-for="CustomerShifr" class="form-control" />
+                <span asp-validation-for="CustomerShifr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCategory" class="control-label"></label>
+                <select asp-for="IdCategory" class ="form-control" asp-items="ViewBag.IdCategory"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Articul" class="control-label"></label>
+                <input asp-for="Articul" class="form-control" />
+                <span asp-validation-for="Articul" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Note" class="control-label"></label>
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Зарезервировать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div>
+        @*@if (System.IO.Path.GetExtension(Model.FilePath).ToLower() == ".dwg")*@
+        {
+            <img src="~/@draftPicture " width="80%" alt="Не удалось загрузить фото чертежа" />
+        }
+    </div>
+
+</div>
+
+<div>
+    <a asp-action="Index">К списку</a>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*Интерактивная проверка для того, существует ли такой шифр*@
+    <script type="text/javascript">
+        $('#ShifrItem').on('input', function () {
+            var v = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ShifrExist")",
+                data: { shifr: v},
+                dataType: "text",
+                success: function (msg) {
+                    $('#ShifrExist').html(msg.replace(/^"(.*)"$/, '$1'));
+                   
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        });
+    </script>
+}

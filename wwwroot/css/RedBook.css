@@ -1,0 +1,38 @@
+﻿.back {
+    background: none;
+    
+}
+
+
+.header
+{
+    align-content: center;
+    align-items:center;
+}
+
+.book {
+    margin-top: 3em;
+    background: url("../pic/redb_sm.jpg");
+    background-attachment: inherit;
+    background-position: top center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 30%;
+    min-height: 30em;
+    min-width: auto;
+    max-width: 60em;
+}
+
+#myForm {
+    align-content: center;
+    align-items: center;
+    vertical-align:baseline;
+}
+
+.form{
+    margin-top:2em;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+    align-content:center;
+}

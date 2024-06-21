@@ -1,0 +1,186 @@
+﻿@model IEnumerable<WebRegistry.Models.Izdelie>
+
+@{
+    ViewData["Title"] = "Список изделий";
+}
+<h1>Изделия</h1>
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Index" asp-controller="AddDraft">Добавить изделие</a>
+    }
+</p>
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-auto mr-auto">
+        <form asp-action="Index">
+        <label class="control-label">Шифр</label>
+        <input class="form-control-sm" name="shifr" />
+        <input type="submit" value="Фильтр" />
+        <button>Очистить фильтр</button>
+        </form>
+    </div>
+        <div class="col-md">
+            Общее количество изделий <b>@ViewData["IzdelieCount"]</b>
+        </div>
+        <div class="col-auto">
+        @if (ViewBag.startIndex > 0)
+        {
+            @Html.ActionLink("Предыдущие 50", "Index", new { startIndex = ViewBag.startIndex - ViewBag.pageSize, ViewBag.pageSize })
+        }
+        @Html.ActionLink("Следующие 50", "Index", new { startIndex = ViewBag.startIndex + ViewBag.pageSize, ViewBag.pageSize })
+        </div>
+    </div>
+</div>
+
+
+<div class="container" style="min-width: 1500px">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Shifr)
+            </th>
+            <th>
+                Чертеж
+            </th>
+            <th>
+                 @Html.DisplayNameFor(model => model.ExtcomponentsNavigations)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DetailIdParentNavigations)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DetailIdPartNavigations)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemasNavigation)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <p>@Html.DisplayFor(modelItem => item.Shifr)</p>
+                @{
+                    var iconPath = $"wwwroot/icons/{item.Shifr}.png";
+                    var fp = System.IO.Path.GetFullPath(iconPath);
+                    if (File.Exists(fp))
+                    {
+                        <div>
+                            <img src="icons/@(item.Shifr).png">
+                        </div>
+                    }
+                }
+
+            </td>
+                <td>
+                  
+                  <a asp-controller="File" asp-action="GetDwgFile" asp-route-filename="@item.FilePath">Скачать чертеж</a>
+                @*@Html.DisplayFor(modelItem => item.FilePath)*@
+            </td>
+            <td>
+
+                @if (item.ExtcomponentsNavigations.Count == 0)
+                {
+                    <p>----</p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var comp in item.ExtcomponentsNavigations)
+                        {
+                            <li>
+                                @comp.ExternalComponentIdNavigation.Name | @comp.ExternalComponentIdNavigation.Shifr
+                            </li>
+                        }
+                    </ul>
+                }
+
+            </td>
+            <td>
+                @*Изделия, входящие в состав*@
+                @if(item.DetailIdParentNavigations.Count==0)
+                {
+                     <p>----</p>
+                }
+                else
+                {
+                    
+                    <ol>
+                       @foreach (var detail in item.DetailIdParentNavigations)
+                    {
+                       <li>
+                           <a asp-controller="Izdelies" asp-action="Details" asp-route-id="@detail.IdPartNavigation.Id">
+                           @detail.IdPartNavigation.Shifr
+                           </a>
+                       </li>            
+                    }
+                    </ol>
+                }
+            </td>
+
+                    @* Где используется*@
+            <td>
+                @if (item.DetailIdPartNavigations.Count == 0)
+                {
+                    <p>----</p>
+                }
+                else
+                {
+
+                    <ol>
+                        @foreach (var detail in item.DetailIdPartNavigations)
+                        {
+                            <li>
+                                <a asp-controller="Izdelies" asp-action="Details" asp-route-id="@detail.IdParentNavigation.Id">
+                                @detail.IdParentNavigation.Shifr
+                                </a>
+                            </li>
+                        }
+                    </ol>
+                }
+            </td>
+
+                    @* Системы*@
+                    <td>
+                        @if (item.SystemasNavigation.Count == 0)
+                        {
+                            <p>----</p>
+                        }
+                        else
+                        {
+                            <ol>
+                                @foreach (var sys in item.SystemasNavigation)
+                                {
+                                    <li>
+                                        @sys.IdSystemaNavigation.SystemName
+                                    </li>
+                                }
+                            </ol>
+                        }
+                    </td>
+          
+            <td>
+               <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a>
+                }
+               
+            </td>
+        </tr>
+       
+}
+    </tbody>
+</table>
+</div>
+
+@if ( ViewData["Added"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewData["Added"]
+    </div>
+}
