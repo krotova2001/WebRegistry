@@ -24,7 +24,7 @@ namespace WebRegistry.BackgroundServises
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                using (IServiceScope scope = _provider.CreateScope())
+                using (IServiceScope scope = _provider.CreateScope()) 
                 {
                     var context = scope.ServiceProvider.GetRequiredService<NomenclatureContext>();
                     var massAll = await _service.GetAll();
